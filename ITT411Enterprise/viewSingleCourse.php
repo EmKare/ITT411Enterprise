@@ -116,16 +116,20 @@
         if($result->num_rows>0) 
         { 
     ?>      <h1><?php echo  $_SESSION['coursecode'].": ".$_SESSION['coursetitle']; ?></h1>
+            <div>Description here</div>
             <h2>Prerequisites</h2>
     <?php 
             if(sizeof($preReqCodeArray) > 0)
             {
+                echo"<table id='table1'>";
+                echo"<tr><th>Course Code</th><th>Course Title</th></tr>";
                 $x = 0;
                 foreach ($preReqCodeArray as $coursecode)
                 {
-                    echo $coursecode.": ".$preReqTitleArray[0]."<br>";
+                    echo"<tr><td>";echo $coursecode."</td><td>".$preReqTitleArray[$x]."</td></tr>";
                     $x += 1;
                 }
+                echo"</table>";
             }
             else
             {

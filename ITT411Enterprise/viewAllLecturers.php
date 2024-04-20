@@ -16,23 +16,28 @@
             </style>
     </head>
     <body>
-        <h1> View All Lecturers</h1>
+        <h1> View All Active Lecturers</h1>
 
         <?php
-            $query="select * from Lecturers"; 
+            $query="select * from Lecturers, Active_Lecturers 
+            where Active_Lecturers.Active_LecturerID = Lecturers.lecturerID;"; 
             $result=mysqli_query($connection,$query)or die('Error query not working');
             if($result->num_rows>0)
             { 
                 echo"<table id='table1'>"; 
-                echo"<tr><th>Lecturer ID</th><th>Full Name</th><th> Department </th><th> Role </th></tr>";
+                echo"<tr><th>Lecturer ID</th><th>Full Name</th><th> Department </th><th> Role </th><th>-</th></tr>";
                 while($row=$result->fetch_assoc())
                 {
-                    echo"<tr><td><a href='viewSingleLecturer.php?id=$row[lecturerID]'>$row[lecturerID]<a/></td><td>$row[title] $row[fname] $row[lname]</td><td>$row[department]</td><td>$row[position]</td></tr>";
+                    echo"<tr><td><a href='viewSingleLecturer.php?id=$row[Active_LecturerID]'>$row[Active_LecturerID]<a/></td><td>$row[title] $row[fname] $row[lname]</td><td>$row[department]</td><td>$row[position]</td><td>";
+                    echo "<form action='retirelecturer.php?id=$row[Active_LecturerID]' method='POST'><input type ='submit' name='submit' value='retire lecturer'></form>";
+                    echo "</td></tr>";                    
                 }
                 echo"</table";
-                $result -> free_result();
             }
-        ?>
-        
+            else
+            {
+                echo "<p><b>NO ACTIVE LECTURER PRESENT</b></p>";
+            }
+        ?>        
     </body>
 </html>

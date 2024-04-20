@@ -27,13 +27,16 @@
                 echo"<table id='table1'>";
                 echo"<tr><th>Student ID</th><th>Full Name</th><th>Student Email</th><th>Address</th><th> Mobile </th><th> Home </th><th> Work </th><th>Program</th><th>-</th></tr>";
                 while($row=$result->fetch_assoc())
-                { 
-                    echo"<tr><td><a href='viewSingleStudent.php?id=$row[studentID]'>$row[studentID]<a/></td><td>$row[fname] $row[mname] $row[lname]</td><td>$row[Semail]</td><td>$row[address]</td><td>$row[Mtele]</td><td>$row[Htele]</td><td>$row[Wtele]</td><td>$row[program]</td><td>";?>
-                    <form action="archivestudent.php" method="POST"><input type ="submit" name="submit" value="archive student"></form>
-                    <?php echo "</td></tr>";
-                    $_SESSION['studentID'] = $row['studentID'];
+                {                     
+                    echo"<tr><td><a href='viewSingleStudent.php?id=$row[studentID]'>$row[studentID]<a/></td><td>$row[fname] $row[mname] $row[lname]</td><td>$row[Semail]</td><td>$row[address]</td><td>$row[Mtele]</td><td>$row[Htele]</td><td>$row[Wtele]</td><td>$row[program]</td><td>";                    
+                    echo "<form action='archivestudent.php?id=$row[studentID]' method='POST'><input type ='submit' name='submit' value='archive student'></form>";
+                    echo "</td></tr>";                   
                 }
                 echo"</table";
+            }
+            else
+            {
+                echo "<p><b>NO ACTIVE STUDENT PRESENT</b></p>";
             }
         ?>
         

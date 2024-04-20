@@ -101,6 +101,9 @@ if (isset($_SESSION['registryPersonelle'])) {
         function viewAllLecturers(){
             document.getElementById("workspace").innerHTML='<object type="text/html" data="viewAllLecturers.php" style="width:100%; height:100%;"></object>'
         }
+        function viewAllInactiveLecturers(){
+            document.getElementById("workspace").innerHTML='<object type="text/html" data="viewAllInactiveLecturers.php" style="width:100%; height:100%;"></object>'
+        }
         function searchLecturers(){
             document.getElementById("workspace").innerHTML='<object type="text/html" data="searchLecturer.php" style="width:100%; height:100%;"></object>>'
         }
@@ -134,7 +137,8 @@ if (isset($_SESSION['registryPersonelle'])) {
             <div class="lecturerDrop">
                 <button class="lecturerbtn"> Lecturers </button>
                 <div class="lecturerDropOptions">
-                    <a href="javascript:viewAllLecturers()"> View All</a>
+                    <a href="javascript:viewAllLecturers()"> View Active</a>
+                    <a href="javascript:viewAllInactiveLecturers()"> View Inactive</a>
                     <a href="javascript:searchLecturers()"> Search</a>
                 </div>
             </div>

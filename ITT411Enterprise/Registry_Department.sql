@@ -1,7 +1,7 @@
 create database if not exists Registry_Department;
 use Registry_Department;
 #drop database Registry_Department;
- 
+
 drop table if exists Students;
 create table Students
 (
@@ -21,6 +21,7 @@ create table Students
     GPA float(3,2) not null default 0.0,
     primary key (studentID)   
 ) auto_increment = 20241000;
+ #ALTER TABLE users ALTER COLUMN email DROP NOT NULL;
 
 insert into Students(fname,mname,lname,Semail,Pemail,address,Mtele,Htele,Wtele,nextOfKin,nextOfKinContact,program) values
 ("Dan","Leon","Jones","dan@school.sch","dan@home.hm","Home, LakeView Ave","876-123-4567","876-987-6543","876-102-0304","Winsome Jones","876-456-7890","Psychology"),
@@ -29,7 +30,7 @@ insert into Students(fname,mname,lname,Semail,Pemail,address,Mtele,Htele,Wtele,n
 ("Jeffery","Ludlow","Homer","jeff@school.sch","jeff@home.hm","Shack, HillTop","876-567-6767","876-876-8766","876-102-9384","Tiasha Pinnock","876-910-1010","Law"),
 ("Ruth","Mina","Lyons","ruthie@school.sch","ruth@home.hm","Apt 3, River Heightd","876-654-9876","876-324-1509","876-981-2345","Dennis Lyons","876-210-9012","Psychology"),
 ("Donovan","Delroy","Davis","dono@school.sch","dono@home.hm","Villa, Uptown Road","876-665-5443","876-996-6330","876-558-8022","Jina Wills","876-770-4411","Mathematics");
-select * from Students;
+select * from Students  where studentID = 20241000;
 #update Students set Semail = "mattjr@school.sch" where studentID = 20241011;
 
 drop table if exists Lecturers;
@@ -83,11 +84,11 @@ insert into Courses(coursecode,coursetitle,coursecredits,coursedegreelevel) valu
 ("UNI100","University Life",1,"Associate"),
 ("ENG101","Academic Writing",3,"Associate"),
 ("PSY102","Intro to Psychology",3,"Bachelor"),
-("PSY302","Clinical Psychology",3,"Bachelor"),
+("PSY302","Clinical Psychology",3,"Bachelor"), #<---
 ("MTH103","College Math",3,"Bachelor"),
-("MTH203","Calculus 1",3,"Bachelor"),
+("MTH203","Calculus 1",3,"Bachelor"),  #<---
 ("LAW111","Intro to Law",3,"Bachelor"),
-("LAW411","Land Law",3,"Bachelor"); 
+("LAW411","Land Law",3,"Bachelor");  #<---
 select * from Courses;
 
 drop table if exists Prerequisites;
@@ -223,9 +224,7 @@ insert into Registered_Students (Registered_studentID) values
 (20241002),
 (20241003),
 (20241004),
-(20241005),
-(20241006),
-(20241007);
+(20241005);
 select * from Registered_Students;
 
 drop table if exists Archived_Students;
@@ -237,6 +236,35 @@ create table Archived_Students
     foreign key (Archived_studentID) references Students (studentID)
 ) auto_increment = 1;
 select * from Archived_Students;
+
+drop table if exists Active_Lecturers;
+create table Active_Lecturers
+(
+	A_number int auto_increment,
+    Active_LecturerID int not null unique,
+	primary key (A_number,Active_LecturerID),
+    foreign key (Active_LecturerID) references Lecturers(lecturerID)
+) auto_increment = 1;
+
+insert into Active_Lecturers (Active_LecturerID) values
+(901001),
+(901002),
+(901003),
+(901004),
+(901005),
+(901006),
+(901007);
+select * from Active_Lecturers;
+
+drop table if exists Retired_Lecturers;
+create table Retired_Lecturers
+(
+	R_number int auto_increment,
+    Retired_LecturerID int not null unique,
+	primary key (R_number,Retired_LecturerID),
+    foreign key (Retired_LecturerID) references Lecturers(lecturerID)
+) auto_increment = 1;
+select * from Retired_Lecturers;
 
 #----------------------------------------------------------------------------------------------------------------------------------
 #calculate and set student final grades
@@ -258,22 +286,33 @@ and enrolmentStudentID = 20241001; # <-- works
 
 #displays final grade for specific course
 select enrolmentStudentID, sum(enrolmentCourseWorkGrade + enrolmentFinalExamORProjectGrade) as 'Final Grade' 
-from Enrolment where enrolmentStudentID = 20241002 and enrolmentCourseCode = "ENG101";
+from Enrolment where enrolmentStudentID = 20241001 and enrolmentSectionCode = 10101;
 
 #display student's final grade and quality point
-select enrolmentStudentID,enrolmentCourseCode,enrolmentFinalGrade,qualityPoint from Grades, Enrolment 
+select enrolmentStudentID,enrolmentSectionCode,enrolmentFinalGrade,qualityPoint from Grades, Enrolment 
 where gradeScaleHigh >= enrolmentFinalGrade and gradeScaleLow <= enrolmentFinalGrade and enrolmentStudentID = 20241002; # <-- WORKS
+select * from Students where studentID = 20241001;
 
 #to calculate and display student grade point
-select enrolmentStudentID,enrolmentCourseCode,coursecredits,enrolmentFinalGrade,qualityPoint,
-round(qualityPoint * coursecredits,2) as 'grade point' from Grades, Enrolment ,Courses
-where gradeScaleHigh >= enrolmentFinalGrade and gradeScaleLow <= enrolmentFinalGrade 
-and Courses.coursecode = Enrolment.enrolmentCourseCode and enrolmentStudentID = 20241002; # <-- WORKS
+select enrolmentStudentID,enrolmentSectionCode,coursecredits,enrolmentFinalGrade,qualityPoint,
+round(qualityPoint * coursecredits,2) as 'grade point' 
+from Grades, Enrolment, Course_Schedule, Courses
+where gradeScaleHigh >= enrolmentFinalGrade 
+and gradeScaleLow <= enrolmentFinalGrade 
+and Courses.coursecode = Course_Schedule.courseScheduleCode
+and Course_Schedule.courseScheduleSection = Enrolment.enrolmentSectionCode 
+and enrolmentStudentID = 20241001; # <-- WORKS
+select * from Students  where studentID = 20241001;
+
+select * from Courses;
+select * from Course_Schedule;
 
 #to update student's GPA
 update Students set GPA = (select round(sum(qualityPoint * coursecredits) / sum(coursecredits),2) 
-from Grades, Enrolment, Courses where gradeScaleHigh >= enrolmentFinalGrade and gradeScaleLow <= enrolmentFinalGrade 
-and Courses.coursecode = Enrolment.enrolmentCourseCode and enrolmentStudentID = 20241006) where studentID = 20241006; # <-- WORKS
+from Grades, Enrolment, Course_Schedule, Courses where gradeScaleHigh >= enrolmentFinalGrade and gradeScaleLow <= enrolmentFinalGrade 
+and Course_Schedule.courseScheduleSection = Enrolment.enrolmentSectionCode 
+and Courses.coursecode = Course_Schedule.courseScheduleCode
+and enrolmentStudentID = 20241001) where studentID = 20241001; # <-- WORKS
 select * from Students;# where studentID = 20241006;
 
 #to display students, final grade, and grade award

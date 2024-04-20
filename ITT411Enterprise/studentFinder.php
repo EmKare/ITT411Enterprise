@@ -17,8 +17,12 @@
             { 
                 $_SESSION['studentID'] = $row['studentID'];
             }
-        } 
-        header("Location: viewSingleStudent.php?id=$_SESSION[studentID]");
+            header("Location: viewSingleStudent.php?id=$_SESSION[studentID]");
+        }
+        else
+        {
+            echo "STUDENT ".$_POST['search']." DOES NOT EXIST";
+        }
     ?>        
     </body>
 </html>

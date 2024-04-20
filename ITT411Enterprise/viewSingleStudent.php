@@ -31,6 +31,7 @@
                     color:red;
                 }
                 #name{padding-left: 140px;}
+                #status{padding-left: 185px;}
                 #studentID{padding-left: 190px;}
                 #program{padding-left: 161px;}
                 #gpa{padding-left: 200px;}
@@ -48,6 +49,12 @@
     <body>
     <?php
 
+        function SET_FINAL($studentID)
+        {
+            $data="update Enrolment set enrolmentFinalGrade = (select sum(enrolmentCourseWorkGrade + enrolmentFinalExamORProjectGrade)) where enrolmentStudentID = $studentID;"; 
+            return $data;
+        }
+
         function QUERY()
         {
             $data="select * from Students, Grades, Enrolment, Course_Schedule, Courses, Lecturers 
@@ -61,12 +68,56 @@
             return $data;
         }
 
+        function SET_GPA($studentID)
+        {
+            $data = "update Students set GPA = (select round(sum(qualityPoint * coursecredits) / sum(coursecredits),2) 
+            from Grades, Enrolment, Course_Schedule, Courses 
+            where gradeScaleHigh >= enrolmentFinalGrade and gradeScaleLow <= enrolmentFinalGrade 
+            and Course_Schedule.courseScheduleSection = Enrolment.enrolmentSectionCode 
+            and Courses.coursecode = Course_Schedule.courseScheduleCode
+            and enrolmentStudentID = $studentID) where studentID = $studentID;";
+            return $data;
+        }
+
         function ARCHIVED_OR_NOT()
         {
             $data = "select * from Registered_Students where Registered_studentID = $_GET[id]";
             return $data;
         }
 
+        $result=mysqli_query($connection,QUERY()) or die('Error query not working');
+        if($result->num_rows>0)
+        {
+            $setFinal=mysqli_query($connection,SET_FINAL($_GET['id']))or die('Error query not working');
+            if($setFinal)
+            {
+                $setGPA=mysqli_query($connection,SET_GPA($_GET['id']))or die('Error query not working');
+                if($setGPA)
+                {}
+            }
+        }
+        else
+        {
+            $setFinal=mysqli_query($connection,SET_FINAL($_GET['id']))or die('Error query not working');
+            if($setFinal)
+            {
+                $setGPA=mysqli_query($connection,SET_GPA($_GET['id']))or die('Error query not working');
+                if($setGPA)
+                { 
+                    $result=mysqli_query($connection,QUERY()) or die('Error query not working');
+                    if($result->num_rows>0)
+                    {
+                        $setFinal=mysqli_query($connection,SET_FINAL($_GET['id']))or die('Error query not working');
+                        if($setFinal)
+                        {
+                            $setGPA=mysqli_query($connection,SET_GPA($_GET['id']))or die('Error query not working');
+                            if($setGPA)
+                            {}
+                        }
+                    }
+                }
+            }
+        }
 
         $setQuery="select * from Students where studentID = $_GET[id] ;";
         $setQueryResult = mysqli_query($connection,$setQuery)or die('Error query not working');
@@ -87,18 +138,25 @@
                 $_SESSION['nextOfKin'] = $row['nextOfKin'];
                 $_SESSION['nextOfKinContact'] = $row['nextOfKinContact'];
                 $_SESSION['program'] = $row['program'];
-                $_SESSION['GPA'] = $row['GPA'];
+                if($result->num_rows>0)
+                {
+                    $_SESSION['GPA'] = $row['GPA'];
+                }
+                else
+                {
+                    $_SESSION['GPA'] = number_format("0",2);
+                }
+                $setStatus = mysqli_query($connection,ARCHIVED_OR_NOT())or die('Error query not working');
+                if($setStatus->num_rows>0)
+                {
+                    $_SESSION['status'] = "Active";
+                }
+                else
+                {
+                    $_SESSION['status'] = "Inactive";
+                }
             }
         }
-
-        $result=mysqli_query($connection,QUERY()) or die('Error query not working');
-
-        if($result->num_rows<1)
-        {
-            $setFinalGrade="update Enrolment set enrolmentFinalGrade = (select sum(enrolmentCourseWorkGrade + enrolmentFinalExamORProjectGrade)) where enrolmentStudentID = $_SESSION[studentID];";
-            $result=mysqli_query($connection,$setFinalGrade)or die('Error query not working');
-            $result=mysqli_query($connection,QUERY())or die('Error query not working');
-        }  
 
         if($result->num_rows>0) 
         {
@@ -106,19 +164,25 @@
             <div>
                 <h1>Student Profile</h1>
                 <p>Full Name: <span id="name"><?php echo $_SESSION['fname']." ".$_SESSION['mname']." ".$_SESSION['lname']; ?></span></p>
+                <p>Status: <span id="status"><?php echo $_SESSION['status']; ?></span></p>
                 <p>ID no: <span id="studentID"><?php echo $_SESSION['studentID']; ?></span></p>   
                 <p>Program: <span id="program"><?php echo $_SESSION['program']; ?></span></p>
                 <p>GPA: <span id="gpa"><?php echo $_SESSION['GPA']; ?></span></p>        
-            </div>
-            <h2>Courses</h2>
+            </div>            
     <?php 
-            echo"<table id='table1'>";
-            echo"<tr><th>Course Code</th><th>Course</th><th>Lecturer</th><th>Coursework/60</th><th>Exam Score/40</th><th>Total Score/100</th><th>Grade</th><th>Grade Award</th></tr>";
+            echo "<h2>Courses</h2>"
+            ."<div style='display:inline-flex' >"
+            ."<form action='addcourse.php?id=$_GET[id]' method='POST'><input type ='submit' name='submit' value='   add courses  '>"
+            ."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"          
+            ."</form><form action='archivestudent.php?id=$_GET[id]' method='POST'><input type ='submit' name='submit' value='    edit grades   '></form>"
+            ."</div><br><br>"
+            ."<span style='color:black;font-size:25px;'><table id='table1'>"
+            ."<tr><th>Course Code</th><th>Course Title</th><th>Lecturer</th><th>Coursework/60</th><th>Exam Score/40</th><th>Total Score/100</th><th>Grade</th><th>Grade Award</th></tr>";
             while($row=$result->fetch_assoc())
             { 
                 echo"<tr><td>$row[coursecode]</td><td>$row[coursetitle]</td><td>$row[title] $row[fname] $row[lname]</td><td>$row[enrolmentCourseWorkGrade]</td><td>$row[enrolmentFinalExamORProjectGrade]</td><td>$row[enrolmentFinalGrade]</td><td>$row[grade]</td><td>$row[award]</td></tr>";
             } 
-            echo"</table>";
+            echo"</table></span>";
     ?>  
             <h2>Contact</h2>
             <div>
@@ -133,17 +197,13 @@
             </div>
     <?php
             $result=mysqli_query($connection,ARCHIVED_OR_NOT())or die('Error query not working');
-            if($result)
+            if($result->num_rows>0)
             {
-                ?>
-                    <form action="archivestudent.php" method="POST"><input type ="submit" name="submit" value="archive student"></form>
-                <?php
+                echo "<form action='archivestudent.php?id=$_GET[id]' method='POST'><input type ='submit' name='submit' value='archive student'></form>";
             }
             else
             {
-                ?>
-                    <form action="unarchivestudent.php" method="POST"><input type ="submit" name="submit" value="unarchive student"></form>
-                <?php
+                echo "<form action='unarchivestudent.php?id=$_GET[id]' method='POST'><input type ='submit' name='submit' value='unarchive student'></form>";
             }
         }
 //-------------------------------------------------------------------------------------------------------------------------------
@@ -154,6 +214,7 @@
             <div>
                 <h1>Student Profile</h1>
                 <p>Full Name: <span id="name"><?php echo $_SESSION['fname']." ".$_SESSION['mname']." ".$_SESSION['lname']; ?></span></p>
+                <p>Status: <span id="status"><?php echo $_SESSION['status']; ?></span></p>
                 <p>ID no: <span id="studentID"><?php echo $_SESSION['studentID']; ?></span></p>   
                 <p>Program: <span id="program"><?php echo $_SESSION['program']; ?></span></p>
                 <p>GPA: <span id="gpa"><?php echo $_SESSION['GPA']; ?></span></p>        
@@ -177,17 +238,13 @@
             </div>
     <?php
             $result=mysqli_query($connection,ARCHIVED_OR_NOT())or die('Error query not working');
-            if($result)
+            if($result->num_rows>0)
             {
-                ?>
-                    <form action="archivestudent.php" method="POST"><input type ="submit" name="submit" value="archive student"></form>
-                <?php
+                echo "<form action='archivestudent.php?id=$_GET[id]' method='POST'><input type ='submit' name='submit' value='archive student'></form>";
             }
             else
             {
-                ?>
-                    <form action="unarchivestudent.php" method="POST"><input type ="submit" name="submit" value="unarchive student"></form>
-                <?php
+                echo "<form action='unarchivestudent.php?id=$_GET[id]' method='POST'><input type ='submit' name='submit' value='unarchive student'></form>";
             }
         }
     ?>     

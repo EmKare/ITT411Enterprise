@@ -31,6 +31,7 @@
                     color:red;
                 }
                 #name{padding-left: 140px;}
+                #status{padding-left: 185px;}
                 #lecturerID{padding-left: 190px;}
                 #department{padding-left: 129px;}
                 #position{padding-left: 200px;}
@@ -74,6 +75,13 @@
             else{return strval($data) . ":00 AM";}
         }
 
+        function ARCHIVED_OR_NOT()
+        {
+            $data = "select * from Active_Lecturers where Active_LecturerID = $_GET[id]";
+            return $data;
+        }
+
+
         $setQuery="select * from Lecturers where lecturerID = $_GET[id] ;";
         $setQueryResult = mysqli_query($connection,$setQuery)or die('Error query not working');
         if($setQueryResult->num_rows>0)
@@ -86,6 +94,15 @@
                 $_SESSION['lname'] = $row['lname'];
                 $_SESSION['department'] = $row['department'];
                 $_SESSION['position'] = $row['position'];
+                $setStatus = mysqli_query($connection,ARCHIVED_OR_NOT())or die('Error query not working');
+                if($setStatus->num_rows>0)
+                {
+                    $_SESSION['status'] = "Active";
+                }
+                else
+                {
+                    $_SESSION['status'] = "Retired";
+                }
             }
         }
         $viewquery="select * from Lecturers, Course_Schedule, Courses where Course_Schedule.courseScheduleLecturerID = Lecturers.lecturerID and Courses.coursecode = Course_Schedule.courseScheduleCode and courseScheduleLecturerID = $_GET[id]";
@@ -94,8 +111,9 @@
         { 
     ?>
             <div>
-                <h1>Student Profile</h1>
+                <h1>Lecturer Profile</h1>
                 <p>Full Name: <span id="name"><?php echo $_SESSION['title']." ".$_SESSION['fname']." ".$_SESSION['lname']; ?></span></p>
+                <p>Status: <span id="status"><?php echo $_SESSION['status']; ?></span></p>
                 <p>ID no: <span id="lecturerID"><?php echo $_SESSION['lecturerID']; ?></span></p>   
                 <p>Department: <span id="department"><?php echo $_SESSION['department']; ?></span></p>
                 <p>Role: <span id="position"><?php echo $_SESSION['position']; ?></span></p>        
@@ -113,6 +131,15 @@
                 echo"<tr><td>$row[courseScheduleCode]</td><td>$row[coursetitle]</td><td>$semester</td><td>$year</td><td>$dotw</td><td>$tod</td><td>$row[courseScheduleLocation]</td></tr>";
             } 
             echo"</table>";
+            $result=mysqli_query($connection,ARCHIVED_OR_NOT())or die('Error query not working');
+            if($result->num_rows>0)
+            {
+                echo "<form action='retirelecturer.php?id=$_GET[id]' method='POST'><input type ='submit' name='submit' value='retire lecturer'></form>";
+            }
+            else
+            {
+                echo "<form action='unretirelecturer.php?id=$_GET[id]' method='POST'><input type ='submit' name='submit' value='unretire lecturer'></form>";
+            }
         }
     ?>     
     </body>
