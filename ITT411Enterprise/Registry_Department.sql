@@ -92,9 +92,9 @@ select * from Courses;
 drop table if exists Course_Description;
 create table Course_Description
 (
-	courseDescriptioncode varchar(10) not null,
-	courseDescription varchar(5000) not null,    
-    primary key (courseDescriptioncode)
+	courseDescriptioncode varchar(10) not null primary key,
+	courseDescription varchar(5000) not null,
+    foreign key (courseDescriptioncode) references  Courses(coursecode)
 );
 
 insert into Course_Description(courseDescriptioncode,courseDescription) values
