@@ -120,8 +120,7 @@ if (isset($_SESSION['registryPersonelle'])) {
 </head>
 <body>
     <div class="hpage">
-        <h1>Welcome <?php echo $_SESSION['registryPersonelle'] . "<br>"; ?></h1>   
-
+        <h1><a href="Registryhomepage.php" style="text-decoration:none;color:black">Welcome <?php echo $_SESSION['registryPersonelle'];?></a></h1>   
         <div class="menu">
             <div class="studentDrop">
                 <button class="studentbtn"> Students </button>
@@ -149,10 +148,10 @@ if (isset($_SESSION['registryPersonelle'])) {
                     <a href="javascript:searchCourses()"> Search</a>
                 </div>
             </div>
-            <!--<a href="javascript:personalinfo()">My Details</a> -->
             <a style="float:right" class="active" href="logoutUser.php">Logout</a>
         </div>          
      </div>
+
      <div id="workspace"></div>
 </body>
 </html>

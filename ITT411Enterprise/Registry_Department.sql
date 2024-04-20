@@ -18,10 +18,9 @@ create table Students
 	nextOfKin varchar(50) not null,
     nextOfKinContact varchar(12) not null,    
     program varchar(20) not null,
-    GPA float(3,2) not null default 0.0,
+    GPA float(3,2) default 0.0,
     primary key (studentID)   
 ) auto_increment = 20241000;
- #ALTER TABLE users ALTER COLUMN email DROP NOT NULL;
 
 insert into Students(fname,mname,lname,Semail,Pemail,address,Mtele,Htele,Wtele,nextOfKin,nextOfKinContact,program) values
 ("Dan","Leon","Jones","dan@school.sch","dan@home.hm","Home, LakeView Ave","876-123-4567","876-987-6543","876-102-0304","Winsome Jones","876-456-7890","Psychology"),
@@ -31,7 +30,6 @@ insert into Students(fname,mname,lname,Semail,Pemail,address,Mtele,Htele,Wtele,n
 ("Ruth","Mina","Lyons","ruthie@school.sch","ruth@home.hm","Apt 3, River Heightd","876-654-9876","876-324-1509","876-981-2345","Dennis Lyons","876-210-9012","Psychology"),
 ("Donovan","Delroy","Davis","dono@school.sch","dono@home.hm","Villa, Uptown Road","876-665-5443","876-996-6330","876-558-8022","Jina Wills","876-770-4411","Mathematics");
 select * from Students  where studentID = 20241000;
-#update Students set Semail = "mattjr@school.sch" where studentID = 20241011;
 
 drop table if exists Lecturers;
 create table Lecturers
@@ -91,6 +89,25 @@ insert into Courses(coursecode,coursetitle,coursecredits,coursedegreelevel) valu
 ("LAW411","Land Law",3,"Bachelor");  #<---
 select * from Courses;
 
+drop table if exists Course_Description;
+create table Course_Description
+(
+	courseDescriptioncode varchar(10) not null,
+	courseDescription varchar(5000) not null,    
+    primary key (courseDescriptioncode)
+);
+
+insert into Course_Description(courseDescriptioncode,courseDescription) values
+("UNI100","Introduction to University Life is designed to help new students transition to the academic and social aspects of university. This course typically covers topics such as study skills, time management, campus resources, academic planning, and goal setting. Additionally, students will learn about university policies, procedures, and support services available to them. This course aims to familiarize students with the university environment, promote a sense of community, and provide strategies for academic success and personal development during their time at the university."),
+("ENG101","Academic Writing focuses on developing students' ability to write clear, coherent, and well-structured essays, research papers, and other academic documents. Students will learn about the principles of effective writing, including organization, argumentation, evidence-based reasoning, and proper citation of sources. This course also covers various writing styles, such as expository, persuasive, and analytical writing, and emphasizes the importance of critical thinking and revision. Additionally, students may learn about research techniques, source evaluation, and ethical considerations in academic writing. The goal is to equip students with the skills necessary to communicate their ideas effectively in an academic context."),
+("PSY102","Introduction to Psychology provides an overview of the fundamental principles and theories of psychology. Students will explore topics such as the history of psychology, research methods, biological bases of behavior, sensation and perception, learning and memory, cognition, development, personality, social psychology, and mental health. This course aims to familiarize students with the diverse areas of psychology and the scientific study of human behavior and mental processes, laying the groundwork for further exploration in the field of psychology."),
+("PSY302","Clinical Psychology delves into the assessment, diagnosis, and treatment of mental health disorders. Students will explore topics such as psychopathology, psychological assessment methods, therapeutic interventions, and ethical considerations in clinical practice. This course will cover various theoretical approaches to psychotherapy, such as cognitive-behavioral therapy, psychodynamic therapy, and humanistic-existential therapy. Additionally, students will learn about research methods in clinical psychology, cultural considerations in assessment and treatment, and the role of clinical psychologists in different settings. The goal is to provide students with a comprehensive understanding of the practice of clinical psychology and the skills necessary for working in the field."), #<---
+("MTH103","College Algebra covers fundamental algebraic concepts such as equations, inequalities, functions, graphs, and their applications. Students learn to manipulate algebraic expressions, solve equations and inequalities, work with functions and their properties, and explore topics like polynomial, rational, exponential, and logarithmic functions. This course aims to develop students' algebraic reasoning and problem-solving skills, laying a strong foundation for further studies in mathematics and related fields."),
+("MTH203","Calculus 1 covers the foundational concepts of differential and integral calculus. Students will learn about limits, derivatives, and their applications in analyzing functions, rates of change, and optimization problems. This course also introduces the concept of integration and its applications in finding areas, volumes, and solving related rate problems. Additionally, students explore topics such as the fundamental theorem of calculus, techniques of integration, and applications of integrals. The goal of the course is to provide students with a solid understanding of the fundamental principles of calculus and their practical applications."),  #<---
+("LAW111","Introduction to Law introduces students to the fundamental principles and concepts of the legal system. Students explore topics such as the sources of law, the structure of the legal system, different branches of law, and the principles of legal reasoning. This course will cover foundational areas of law such as constitutional law, criminal law, civil law, and administrative law, providing an overview of key legal principles and landmark cases. Additionally, students will learn about legal ethics, the role of precedent, and the basics of legal analysis and argumentation. The goal is to provide students with a broad understanding of the legal framework and its impact on society."),
+("LAW411","Land Law focuses on the legal principles and regulations governing land and property rights. Students will explore topics such as the nature of property, estates and interests in land, land registration, co-ownership, easements, and the law of landlord and tenant. This course will also cover the legal implications of land use, development, and environmental considerations. Additionally, students will study the legal remedies available in cases of property disputes and the impact of land law on real estate transactions. The goal of the course is to provide students with a comprehensive understanding of the legal framework surrounding land and property, as well as the practical application of land law principles.");  #<---
+select * from Course_Description;
+
 drop table if exists Prerequisites;
 create table Prerequisites
 (
@@ -135,6 +152,7 @@ courseScheduleYear,courseScheduleDay,courseScheduleTime,courseScheduleLocation,c
 (10111,"LAW111",1,1,3,13,"Classroom 5",901004),
 (10411,"LAW411",1,4,2,10,"Online",901002),
 (10103,"MTH103",1,1,5,9,"Classroom 5",901003),
+(20103,"MTH103",1,1,3,4,"Classroom 4",901003),
 (10203,"MTH203",1,2,4,12,"Classroom 1",901003),
 (10102,"PSY102",1,1,3,17,"Classroom 2",901001),
 (20102,"PSY102",1,1,2,18,"ONLINE",901007),
@@ -317,9 +335,13 @@ select * from Students;# where studentID = 20241006;
 
 #to display students, final grade, and grade award
 select enrolmentStudentID as 'Student ID',concat(fname," ",mname," ",lname) as 'Student',coursetitle as 'Course',enrolmentFinalGrade as 'Final Score',
-grade as 'Grade',award as 'Grade Award' from Students, Grades, Enrolment, Courses 
-where gradeScaleHigh >= enrolmentFinalGrade and gradeScaleLow <= enrolmentFinalGrade and Enrolment.enrolmentStudentID = Students.studentID
-and Enrolment.enrolmentCourseCode = Courses.coursecode and enrolmentStudentID = 20241006; # <-- works 
+grade as 'Grade',award as 'Grade Award' from Students, Grades, Enrolment, Courses, Course_Schedule 
+where gradeScaleHigh >= enrolmentFinalGrade 
+and gradeScaleLow <= enrolmentFinalGrade 
+and Enrolment.enrolmentStudentID = Students.studentID
+and Enrolment.enrolmentSectionCode = Course_Schedule.courseScheduleSection
+and Courses.coursecode = Course_Schedule.courseScheduleCode
+and enrolmentStudentID = 20241001; # <-- works (courseScheduleSection,courseScheduleCode   enrolmentSectionCode,
 
 #displays courses and their prerequisites (if available)
 select Courses.coursecode as 'Course Code', Courses.coursetitle as 'Course Title', Prerequisites.prerequisite as 'Prerequisite Code', 

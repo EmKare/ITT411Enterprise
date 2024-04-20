@@ -84,16 +84,21 @@
             $data = "select * from Registered_Students where Registered_studentID = $_GET[id]";
             return $data;
         }
+        header("refresh: 10");
 
         $result=mysqli_query($connection,QUERY()) or die('Error query not working');
         if($result->num_rows>0)
         {
+            //echo $result->num_rows." - ";
             $setFinal=mysqli_query($connection,SET_FINAL($_GET['id']))or die('Error query not working');
             if($setFinal)
             {
+                //echo $setFinal." - ";
                 $setGPA=mysqli_query($connection,SET_GPA($_GET['id']))or die('Error query not working');
                 if($setGPA)
-                {}
+                {
+                    //echo $setGPA." - ";
+                }
             }
         }
         else
@@ -101,18 +106,24 @@
             $setFinal=mysqli_query($connection,SET_FINAL($_GET['id']))or die('Error query not working');
             if($setFinal)
             {
+                //echo $setFinal." - ";
                 $setGPA=mysqli_query($connection,SET_GPA($_GET['id']))or die('Error query not working');
                 if($setGPA)
                 { 
+                    //echo $setGPA." - ";
                     $result=mysqli_query($connection,QUERY()) or die('Error query not working');
                     if($result->num_rows>0)
                     {
+                        //echo $result->num_rows." - ";
                         $setFinal=mysqli_query($connection,SET_FINAL($_GET['id']))or die('Error query not working');
                         if($setFinal)
                         {
+                            //echo $setFinal." - ";
                             $setGPA=mysqli_query($connection,SET_GPA($_GET['id']))or die('Error query not working');
                             if($setGPA)
-                            {}
+                            { 
+                                //echo $setGPA; 
+                            }
                         }
                     }
                 }
@@ -138,6 +149,7 @@
                 $_SESSION['nextOfKin'] = $row['nextOfKin'];
                 $_SESSION['nextOfKinContact'] = $row['nextOfKinContact'];
                 $_SESSION['program'] = $row['program'];
+                
                 if($result->num_rows>0)
                 {
                     $_SESSION['GPA'] = $row['GPA'];
@@ -157,7 +169,7 @@
                 }
             }
         }
-
+        $result=mysqli_query($connection,QUERY()) or die('Error query not working');
         if($result->num_rows>0) 
         {
     ?>
@@ -172,15 +184,17 @@
     <?php 
             echo "<h2>Courses</h2>"
             ."<div style='display:inline-flex' >"
-            ."<form action='addcourse.php?id=$_GET[id]' method='POST'><input type ='submit' name='submit' value='   add courses  '>"
+            ."<form action='addcourse.php?id=$_GET[id]' method='POST'><input type ='submit' name='submit' value='   add courses  '></form>"
             ."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"          
-            ."</form><form action='archivestudent.php?id=$_GET[id]' method='POST'><input type ='submit' name='submit' value='    edit grades   '></form>"
+            ."<form action='removecourse.php?id=$_GET[id]' method='POST'><input type ='submit' name='submit' value='   remove course  '></form>"
             ."</div><br><br>"
+
             ."<span style='color:black;font-size:25px;'><table id='table1'>"
-            ."<tr><th>Course Code</th><th>Course Title</th><th>Lecturer</th><th>Coursework/60</th><th>Exam Score/40</th><th>Total Score/100</th><th>Grade</th><th>Grade Award</th></tr>";
+            ."<tr><th>Course Code</th><th>Course Title</th><th>Lecturer</th><th>Coursework/60</th><th>Exam Score/40</th><th>Total Score/100</th><th>Grade</th><th>Grade Award</th><th>-</th></tr>";
             while($row=$result->fetch_assoc())
             { 
-                echo"<tr><td>$row[coursecode]</td><td>$row[coursetitle]</td><td>$row[title] $row[fname] $row[lname]</td><td>$row[enrolmentCourseWorkGrade]</td><td>$row[enrolmentFinalExamORProjectGrade]</td><td>$row[enrolmentFinalGrade]</td><td>$row[grade]</td><td>$row[award]</td></tr>";
+                echo"<tr><td>$row[coursecode]</td><td>$row[coursetitle]</td><td>$row[title] $row[fname] $row[lname]</td><td>$row[enrolmentCourseWorkGrade]</td><td>$row[enrolmentFinalExamORProjectGrade]</td><td>$row[enrolmentFinalGrade]</td><td>$row[grade]</td><td>$row[award]</td><td><a href='editgrades.php?id=$row[enrolmentNo]'>update</a></td></tr>";
+                $_SESSION['studentID'] = $_GET['id'];
             } 
             echo"</table></span>";
     ?>  
@@ -221,9 +235,12 @@
             </div>
             <h2>Courses</h2>
     <?php 
-            echo"<table id='table1'>
+            echo "<div style='display:inline-flex' >"
+            ."<form action='addcourse.php?id=$_GET[id]' method='POST'><input type ='submit' name='submit' value='   add courses  '></form>"
+            ."</div><br><br>"
+            ."<span style='color:black;font-size:25px;'><table id='table1'>
             <tr><th>Course Code</th><th>Course</th><th>Lecturer</th><th>Coursework/60</th><th>Exam Score/40</th><th>Total Score/100</th><th>Grade</th><th>Grade Award</th></tr>
-            <tr style='text-align:center;color:red'><td colspan='8'><b>".strtoupper($_SESSION['fname'])." ".strtoupper($_SESSION['lname'])." HAS NOT SELECTED ANY COUSES AS YET</b></td></tr></table>";
+            <tr style='text-align:center;color:red'><td colspan='8'><b>".strtoupper($_SESSION['fname'])." ".strtoupper($_SESSION['lname'])." HAS NOT SELECTED ANY COUSES AS YET</b></td></tr></table></span>";
     ?>  
             <h2>Contact</h2>
             <div>

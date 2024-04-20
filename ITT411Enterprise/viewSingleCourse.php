@@ -81,7 +81,9 @@
             else{return strval($data) . ":00 AM";}
         }
 
-        $setQuery="select * from Courses where coursecode = '$_GET[id]';";
+        $setQuery="select * from Courses, Course_Description 
+        where Courses.coursecode = Course_Description.courseDescriptioncode
+        and coursecode = '$_GET[id]';";
         $setQueryResult = mysqli_query($connection,$setQuery)or die('Error query not working');
         $preReqCodeArray = array();
         $preReqTitleArray = array();
@@ -93,6 +95,7 @@
                 $_SESSION['coursetitle'] = $row['coursetitle'];
                 $_SESSION['coursecredits'] = $row['coursecredits'];
                 $_SESSION['coursedegreelevel'] = $row['coursedegreelevel'];
+                $_SESSION['courseDescription'] = $row['courseDescription'];
             }
             $prereq = "select prerequisite, (select Courses.coursetitle from Courses where Prerequisites.prerequisite = Courses.coursecode) 
             as 'Title' from Courses, Prerequisites where Prerequisites.coursecode = Courses.coursecode and Prerequisites.coursecode = '$_GET[id]'";
@@ -116,7 +119,7 @@
         if($result->num_rows>0) 
         { 
     ?>      <h1><?php echo  $_SESSION['coursecode'].": ".$_SESSION['coursetitle']; ?></h1>
-            <div>Description here</div>
+            <div><?php echo  $_SESSION['courseDescription'];?></div>
             <h2>Prerequisites</h2>
     <?php 
             if(sizeof($preReqCodeArray) > 0)

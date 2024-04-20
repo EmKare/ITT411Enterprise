@@ -17,7 +17,7 @@
         }
         else
         {
-            echo "<p style='color:red'><b>STUDENT ".$_POST['unarchivesearch']." IS AN ACTIVE STUDENT  </b></p>";
+            echo "<p style='color:red'><b>STUDENT ".$_POST['unarchivesearch']." NOT FOUND IN INACTIVE STUDENTS LIST  </b></p>";
         }
     ?>        
     </body>
