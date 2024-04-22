@@ -128,7 +128,7 @@
                 $year = YEAR($row['courseScheduleYear']);
                 $semester = SEMESTER($row['courseScheduleSemester']);
                 $tod = TOD($row['courseScheduleTime']);
-                echo"<tr><td>$row[courseScheduleCode]</td><td>$row[coursetitle]</td><td>$semester</td><td>$year</td><td>$dotw</td><td>$tod</td><td>$row[courseScheduleLocation]</td></tr>";
+                echo"<tr><td><a href='viewSingleCourse.php?id=$row[courseScheduleCode]' >$row[courseScheduleCode]</a></td><td>$row[coursetitle]</td><td>$semester</td><td>$year</td><td>$dotw</td><td>$tod</td><td>$row[courseScheduleLocation]</td></tr>";
             } 
             echo"</table>";
             $result=mysqli_query($connection,ARCHIVED_OR_NOT())or die('Error query not working');

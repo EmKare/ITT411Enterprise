@@ -119,12 +119,12 @@
         if($result->num_rows>0) 
         { 
     ?>      <h1><?php echo  $_SESSION['coursecode'].": ".$_SESSION['coursetitle']; ?></h1>
-            <div><?php echo  $_SESSION['courseDescription'];?></div>
+            <div style=font-size:20px; ><?php echo  $_SESSION['courseDescription'];?></div>
             <h2>Prerequisites</h2>
     <?php 
             if(sizeof($preReqCodeArray) > 0)
             {
-                echo"<table id='table1'>";
+                echo"<span style='color:black;font-size:25px;'><table id='table1'>";
                 echo"<tr><th>Course Code</th><th>Course Title</th></tr>";
                 $x = 0;
                 foreach ($preReqCodeArray as $coursecode)
@@ -132,15 +132,15 @@
                     echo"<tr><td>";echo $coursecode."</td><td>".$preReqTitleArray[$x]."</td></tr>";
                     $x += 1;
                 }
-                echo"</table>";
+                echo"</table></span>";
             }
             else
             {
-                echo "NO PREREQUISITES REQUIRED";
+                echo "<div style='font-size:20px;' >NO PREREQUISITES REQUIRED</div>";
             }
     ?>      <h2>Sections</h2>            
     <?php 
-            echo"<table id='table1'>";
+            echo"<span style='color:black;font-size:25px;'><table id='table1'>";
             echo"<tr><th>Day</th><th>Time</th><th>Classroom</th><th>Lecturer</th></tr>";
             while($row=$result->fetch_assoc())
             { 
@@ -148,9 +148,10 @@
                 $year = YEAR($row['courseScheduleYear']);
                 $semester = SEMESTER($row['courseScheduleSemester']);
                 $tod = TOD($row['courseScheduleTime']);
-                echo"<tr><td>$dotw</td><td>$tod</td><td>$row[courseScheduleLocation]</td><td>$row[title] $row[fname] $row[lname]</td></tr>";
+                echo"<tr><td>$dotw</td><td>$tod</td><td>$row[courseScheduleLocation]</td>"
+                ."<td><a href='viewSingleLecturer.php?id=$row[courseScheduleLecturerID]'>$row[title] $row[fname] $row[lname]</a></td></tr>";
             } 
-            echo"</table>";
+            echo"</table></span>";
         }
     ?>        
     </body>

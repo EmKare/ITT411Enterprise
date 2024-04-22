@@ -196,7 +196,13 @@
             ."<tr><th>Course Code</th><th>Course Title</th><th>Lecturer</th><th>Coursework/60</th><th>Exam Score/40</th><th>Total Score/100</th><th>Grade</th><th>Grade Award</th><th>-</th></tr>";
             while($row=$result->fetch_assoc())
             { 
-                echo"<tr><td>$row[coursecode]</td><td>$row[coursetitle]</td><td>$row[title] $row[fname] $row[lname]</td><td>$row[enrolmentCourseWorkGrade]</td><td>$row[enrolmentFinalExamORProjectGrade]</td><td>$row[enrolmentFinalGrade]</td><td>$row[grade]</td><td>$row[award]</td><td><a href='editgrades.php?id=$row[enrolmentNo]'>update</a></td></tr>";
+                echo"<tr><td><a href='viewSingleCourse.php?id=$row[courseScheduleCode]'>"
+                ."$row[coursecode]</a></td><td>$row[coursetitle]</td>"
+                ."<td><a href='viewSingleLecturer.php?id=$row[courseScheduleLecturerID]'>$row[title] $row[fname] $row[lname]</a></td>"
+                ."<td>$row[enrolmentCourseWorkGrade]</td>"
+                ."<td>$row[enrolmentFinalExamORProjectGrade]</td>"
+                ."<td>$row[enrolmentFinalGrade]</td><td>$row[grade]</td>"
+                ."<td>$row[award]</td><td><a href='editgrades.php?id=$row[enrolmentNo]'>update</a></td></tr>";
                 $_SESSION['studentID'] = $_GET['id'];
             } 
             echo"</table></span>";
