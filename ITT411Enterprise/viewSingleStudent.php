@@ -182,14 +182,17 @@
                 <p>GPA: <span id="gpa"><?php echo $_SESSION['GPA']; ?></span></p>        
             </div>            
     <?php 
-            echo "<h2>Courses</h2>"
-            ."<div style='display:inline-flex' >"
-            ."<form action='addcourse.php?id=$_GET[id]' method='POST'><input type ='submit' name='submit' value='   add courses  '></form>"
-            ."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"          
-            ."<form action='removecourse.php?id=$_GET[id]' method='POST'><input type ='submit' name='submit' value='   remove course  '></form>"
-            ."</div><br><br>"
-
-            ."<span style='color:black;font-size:25px;'><table id='table1'>"
+            echo "<h2>Courses</h2>";
+            $buttonresult=mysqli_query($connection,ARCHIVED_OR_NOT())or die('Error query not working');
+            if($buttonresult->num_rows>0)
+            {
+                echo "<div style='display:inline-flex' >"
+                ."<form action='addcourse.php?id=$_GET[id]' method='POST'><input type ='submit' name='submit' value='   add courses  '></form>"
+                ."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"          
+                ."<form action='removecourse.php?id=$_GET[id]' method='POST'><input type ='submit' name='submit' value='   remove course  '></form>"
+                ."</div><br><br>";
+            }
+            echo "<span style='color:black;font-size:25px;'><table id='table1'>"
             ."<tr><th>Course Code</th><th>Course Title</th><th>Lecturer</th><th>Coursework/60</th><th>Exam Score/40</th><th>Total Score/100</th><th>Grade</th><th>Grade Award</th><th>-</th></tr>";
             while($row=$result->fetch_assoc())
             { 
