@@ -61,13 +61,14 @@
             return $data;
         }
 
-        echo $_SESSION['studentID']."- ".$_SESSION['fname']." ".$_SESSION['lname']."<br>GPA: ".$_SESSION['GPA'];
+        echo "<h1>".$_SESSION['studentID']."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+        ."GPA: ".$_SESSION['GPA']."</h1>";
         $sectionsArray = array();
         $courseCodeArray = array();
         $result=mysqli_query($connection,QUERY()) or die('Error query not working');
         if($result->num_rows>0) 
         {
-            echo "<h2>$_SESSION[studentID]'s Courses</h2>"
+            echo "<h2>Courses for $_SESSION[fname] $_SESSION[lname]</h2>"
             ."<span style='color:black;font-size:25px;'>"
             ."<table id='table1'>"
             ."<tr><th>Course Code</th><th>Course Title</th><th>Lecturer</th><th>Grade</th><th>Grade Award</th><th>-</th></tr>";

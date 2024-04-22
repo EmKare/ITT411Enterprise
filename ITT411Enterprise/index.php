@@ -85,7 +85,7 @@
         </style>
     </head>
     <body>
-            <a href="#" class="fixed-element">Registry</a>
+            <!--<a href="#" class="fixed-element">Registry</a>-->
         <div class="loginbox">
             
             <h1>Registry Login</h1>

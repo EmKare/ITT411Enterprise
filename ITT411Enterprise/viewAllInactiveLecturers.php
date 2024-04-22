@@ -24,7 +24,7 @@
             $result=mysqli_query($connection,$query)or die('Error query not working');
             if($result->num_rows>0)
             { 
-                echo"<table id='table1'>"; 
+                echo"<span style='color:black;font-size:25px;'><table id='table1'>"; 
                 echo"<tr><th>Lecturer ID</th><th>Full Name</th><th> Department </th><th> Role </th><th>-</th></tr>";
                 while($row=$result->fetch_assoc())
                 {
@@ -32,7 +32,7 @@
                     echo "<form action='unretirelecturer.php?id=$row[Retired_LecturerID]' method='POST'><input type ='submit' name='submit' value='unretire lecturer'></form>";
                     echo "</td></tr>";
                 }
-                echo"</table";
+                echo"</table></span>";
             }
             else
             {

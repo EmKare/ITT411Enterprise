@@ -24,7 +24,7 @@
             $result=mysqli_query($connection,$query)or die('Error query not working');
             if($result->num_rows>0)
             { 
-                echo"<table id='table1'>";
+                echo"<span style='color:black;font-size:25px;'><table id='table1'>";
                 echo"<tr><th>Student ID</th><th>Full Name</th><th>Student Email</th><th>Address</th><th> Mobile </th><th> Home </th><th> Work </th><th>Program</th><th>-</th></tr>";
                 while($row=$result->fetch_assoc())
                 {                     
@@ -32,7 +32,7 @@
                     echo "<form action='unarchiveStudent.php?id=$row[studentID]' method='POST'><input type ='submit' name='submit' value='unarchive student'></form>";
                     echo "</td></tr>";;                   
                 }
-                echo"</table";
+                echo"</table></span>";
             }
             else
             {

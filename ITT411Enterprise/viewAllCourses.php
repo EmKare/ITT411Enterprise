@@ -23,13 +23,13 @@
             $result=mysqli_query($connection,$query)or die('Error query not working');
             if($result->num_rows>0)
             {
-                echo"<table id='table1'>";
+                echo"<span style='color:black;font-size:25px;'><table id='table1'>";
                 echo"<tr><th> Course Code </th><th> Course Title </th><th> Credits </th><th> Degree Level </th></tr>";
                 while($row=$result->fetch_assoc())
                 {
                     echo"<tr><td><a href='viewSingleCourse.php?id=$row[coursecode]'>$row[coursecode]<a/></td><td>$row[coursetitle]</td><td>$row[coursecredits]</td><td>$row[coursedegreelevel]</td></tr>";
                 }
-                echo"</table";
+                echo"</table></span>";
             }
         ?>        
     </body>
