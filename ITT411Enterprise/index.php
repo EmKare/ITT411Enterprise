@@ -37,6 +37,7 @@
             h2
             {
                 color: red;
+                text-align: center;
             }
             .loginbox p
             {

@@ -17,10 +17,10 @@ if (isset($_POST['username']) && isset($_POST['uPassword']))
     $PassWord = validate($_POST['uPassword']);
 
     if(empty($UserName)) {
-		header("Location: registryLogin.php?error=Username is required");
+		header("Location: index.php?error=Username is required");
 	    exit();
 	}else if(empty($PassWord)){
-        header("Location: registryLogin.php?error=Password is required");
+        header("Location: index.php?error=Password is required");
 	    exit();
 	}else{
 		$login = "SELECT * from Registry_Login where registryUsername='$UserName' AND registryPassword='$PassWord'";
@@ -32,18 +32,18 @@ if (isset($_POST['username']) && isset($_POST['uPassword']))
             	header("Location: Registryhomepage.php");
 		        exit();
             }else{
-				header("Location: registryLogin.php?error=Incorrect Username or Password");
+				header("Location: index.php?error=Incorrect Username or Password");
 		        exit();
 			}
 		}else{
-			header("Location: registryLogin.php?error=Incorrect Username or Password");
+			header("Location: index.php?error=Incorrect Username or Password");
 	        exit();
 		}
 	}
 }
 else
 {
-	header("Location: registryLogin.php");
+	header("Location: registryLogin.php?error=Please Enter Username and Password");
 	exit();
 }
 ?>
